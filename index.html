@@ -10,85 +10,122 @@
     
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --bg: #f8fafc;
-            --text: #1e293b;
+            --primary: #6366f1; /* Modern Indigo */
+            --primary-hover: #4f46e5;
+            --bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --border: #d1d5db;
             --error: #ef4444;
-            --success: #22c55e;
+            --success: #10b981;
         }
 
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg);
-            color: var(--text);
+            color: var(--text-main);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
+            padding: 20px;
         }
 
         .card {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             width: 100%;
-            max-width: 400px;
+            max-width: 550px;
+            text-align: center;
         }
 
-        h2 { margin-top: 0; font-weight: 600; font-size: 1.5rem; }
-        p { color: #64748b; font-size: 0.875rem; margin-bottom: 1.5rem; }
+        /* Cute SVG Logo Styling */
+        .logo-container {
+            background: #eef2ff;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 1.5rem;
+        }
 
-        .form-group { margin-bottom: 1rem; }
+        h2 { margin: 0.5rem 0; font-weight: 700; font-size: 1.75rem; letter-spacing: -0.025em; }
+        .subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; }
+
+        /* Professional Grid Layout */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            text-align: left;
+        }
+
+        .full-width { grid-column: span 2; }
+
+        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
 
         label { 
-            display: block; 
             font-size: 0.875rem; 
-            font-weight: 500; 
-            margin-bottom: 0.5rem; 
+            font-weight: 600; 
+            color: var(--text-main);
         }
 
-        input {
-            width: 100%;
+        input, select, textarea {
             padding: 0.75rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            box-sizing: border-box;
-            transition: border-color 0.2s;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
         }
 
-        input:focus {
+        input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: var(--primary);
-            ring: 2px solid var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
         }
 
+        textarea { resize: vertical; min-height: 100px; }
+
         button {
+            margin-top: 1.5rem;
             width: 100%;
             background-color: var(--primary);
             color: white;
-            padding: 0.75rem;
+            padding: 0.875rem;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: 600;
+            font-size: 1rem;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: transform 0.1s active, background 0.2s;
         }
 
         button:hover { background-color: var(--primary-hover); }
+        button:active { transform: scale(0.98); }
         button:disabled { opacity: 0.7; cursor: not-allowed; }
 
         #status-msg {
-            margin-top: 1rem;
-            font-size: 0.875rem;
-            text-align: center;
-            min-height: 1.25rem;
+            margin-top: 1.25rem;
+            font-weight: 500;
+            padding: 0.75rem;
+            border-radius: 8px;
+            display: none;
         }
 
-        .error { color: var(--error); }
-        .success { color: var(--success); }
+        .success-bg { display: block !important; background: #ecfdf5; color: var(--success); }
+        .error-bg { display: block !important; background: #fef2f2; color: var(--error); }
+
+        @media (max-width: 480px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .full-width { grid-column: span 1; }
+        }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
@@ -96,14 +133,52 @@
 <body>
 
 <div class="card">
+    <div class="logo-container">
+        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="#6366f1"/>
+            <circle cx="9" cy="10" r="1.5" fill="#6366f1"/>
+            <circle cx="15" cy="10" r="1.5" fill="#6366f1"/>
+            <path d="M8 15s1.5 2 4 2 4-2 4-2" stroke="#6366f1" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+    </div>
+
     <h2>just check</h2>
-    <p>please enter something.</p>
+    <p class="subtitle">please enter something.</p>
     
     <form id="notification-form">
-        <div class="form-group">
-            <label for="name">enter something</label>
-            <input type="text" id="name" placeholder="enter something" required aria-required="true">
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="username">username</label>
+                <input type="text" id="username" placeholder="e.g. jdoe88" required>
+            </div>
+
+            <div class="form-group">
+                <label for="mobile">mobile number</label>
+                <input type="tel" id="mobile" placeholder="1234567890" required>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="email">emailid</label>
+                <input type="email" id="email" placeholder="name@company.com" required>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="dept">departmentt</label>
+                <select id="dept" required>
+                    <option value="" disabled selected>Select department</option>
+                    <option value="IT">IT Infrastructure</option>
+                    <option value="HR">Human Resources</option>
+                    <option value="Ops">Operations</option>
+                    <option value="Fin">Finance</option>
+                </select>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="desc">problme description</label>
+                <textarea id="desc" placeholder="Describe the issue in detail..." required></textarea>
+            </div>
         </div>
+
         <button type="submit" id="submit-btn">Send Notification</button>
     </form>
     
@@ -112,7 +187,6 @@
 
 <script>
     (function() {
-        // CONFIGURATION
         const CONFIG = {
             PUBLIC_KEY: "MAiuwWmn_VCfpe3-I",
             SERVICE_ID: "service_pv04jg6",
@@ -128,31 +202,25 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const nameInput = document.getElementById('name');
-            const nameValue = nameInput.value.trim();
-
-            // Guard Clause
-            if (!nameValue) return;
-
-            // UI State: Loading
             toggleLoading(true);
 
+            // Mapping your specific field names to Template Parameters
             const templateParams = {
-                user_name: nameValue,
-                time: new Date().toLocaleString('en-US', { 
-                    timeZoneName: 'short',
-                    hour12: true 
-                })
+                username: document.getElementById('username').value,
+                mobile_number: document.getElementById('mobile').value,
+                emailid: document.getElementById('email').value,
+                departmentt: document.getElementById('dept').value,
+                problem_description: document.getElementById('desc').value,
+                time: new Date().toLocaleString()
             };
 
             try {
                 await emailjs.send(CONFIG.SERVICE_ID, CONFIG.TEMPLATE_ID, templateParams);
-                
-                showStatus("Notification sent successfully!", "success");
+                showStatus("submitted", "success-bg");
                 form.reset();
             } catch (error) {
-                console.error("EmailJS Error:", error);
-                showStatus("System unavailable. Please try again later.", "error");
+                console.error("Submission Error:", error);
+                showStatus("Error: Could not submit. Please try again.", "error-bg");
             } finally {
                 toggleLoading(false);
             }
@@ -161,12 +229,15 @@
         function toggleLoading(isLoading) {
             btn.disabled = isLoading;
             btn.textContent = isLoading ? "Processing..." : "Send Notification";
-            statusMsg.textContent = "";
         }
 
-        function showStatus(text, type) {
+        function showStatus(text, className) {
             statusMsg.textContent = text;
-            statusMsg.className = type;
+            statusMsg.className = className;
+            // Auto-hide success message after 5 seconds
+            if(className === "success-bg") {
+                setTimeout(() => { statusMsg.className = ""; statusMsg.style.display = "none"; }, 5000);
+            }
         }
     })();
 </script>
