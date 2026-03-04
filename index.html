@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitor Registration | Secure Portal</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --error: #ef4444;
+            --success: #22c55e;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 { margin-top: 0; font-weight: 600; font-size: 1.5rem; }
+        p { color: #64748b; font-size: 0.875rem; margin-bottom: 1.5rem; }
+
+        .form-group { margin-bottom: 1rem; }
+
+        label { 
+            display: block; 
+            font-size: 0.875rem; 
+            font-weight: 500; 
+            margin-bottom: 0.5rem; 
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            ring: 2px solid var(--primary);
+        }
+
+        button {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover { background-color: var(--primary-hover); }
+        button:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        #status-msg {
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            text-align: center;
+            min-height: 1.25rem;
+        }
+
+        .error { color: var(--error); }
+        .success { color: var(--success); }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+
+<div class="card">
+    <h2>Visitor Check-in</h2>
+    <p>Please log your arrival. A notification will be sent to the administrator.</p>
+    
+    <form id="notification-form">
+        <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" placeholder="John Doe" required aria-required="true">
+        </div>
+        <button type="submit" id="submit-btn">Send Notification</button>
+    </form>
+    
+    <div id="status-msg" role="status"></div>
+</div>
+
+<script>
+    (function() {
+        // CONFIGURATION
+        const CONFIG = {
+            PUBLIC_KEY: "YOUR_PUBLIC_KEY",
+            SERVICE_ID: "YOUR_SERVICE_ID",
+            TEMPLATE_ID: "YOUR_TEMPLATE_ID"
+        };
+
+        emailjs.init(CONFIG.PUBLIC_KEY);
+
+        const form = document.getElementById('notification-form');
+        const btn = document.getElementById('submit-btn');
+        const statusMsg = document.getElementById('status-msg');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const nameInput = document.getElementById('name');
+            const nameValue = nameInput.value.trim();
+
+            // Guard Clause
+            if (!nameValue) return;
+
+            // UI State: Loading
+            toggleLoading(true);
+
+            const templateParams = {
+                user_name: nameValue,
+                time: new Date().toLocaleString('en-US', { 
+                    timeZoneName: 'short',
+                    hour12: true 
+                })
+            };
+
+            try {
+                await emailjs.send(CONFIG.SERVICE_ID, CONFIG.TEMPLATE_ID, templateParams);
+                
+                showStatus("Notification sent successfully!", "success");
+                form.reset();
+            } catch (error) {
+                console.error("EmailJS Error:", error);
+                showStatus("System unavailable. Please try again later.", "error");
+            } finally {
+                toggleLoading(false);
+            }
+        });
+
+        function toggleLoading(isLoading) {
+            btn.disabled = isLoading;
+            btn.textContent = isLoading ? "Processing..." : "Send Notification";
+            statusMsg.textContent = "";
+        }
+
+        function showStatus(text, type) {
+            statusMsg.textContent = text;
+            statusMsg.className = type;
+        }
+    })();
+</script>
+
+</body>
+</html>
